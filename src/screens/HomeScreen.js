@@ -32,11 +32,11 @@ const HomeScreen = () => {
     getRecipes();
   }, []);
 
-  const handleChangeCategory = category =>{
+  const handleChangeCategory = (category) => {
     getRecipes(category);
     setActiveCategory(category);
     setRecipes([]);
-  }
+  };
   const getCategories = async () => {
     try {
       const response = await axios.get(
@@ -131,7 +131,10 @@ const HomeScreen = () => {
 
         {/* recipes */}
         <View>
-          <Recipes categories={categories} recipes={recipes} />
+          <Recipes
+            categories={categories}
+            recipes={recipes}
+          />
         </View>
       </ScrollView>
     </SafeAreaView>
