@@ -11,11 +11,15 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
-import Animated, { FadeIn, FadeInDown, FadeOut } from "react-native-reanimated";
+import Animated, { FadeInDown } from "react-native-reanimated";
 
 // import { categoryData } from "../constants";
 
-export default function Categories({categories, activeCategory, setActiveCategory }) {
+export default function Categories({
+  categories,
+  activeCategory,
+  handleChangeCategory,
+}) {
   return (
     <Animated.View entering={FadeInDown.duration(500).springify()}>
       <ScrollView
@@ -28,7 +32,7 @@ export default function Categories({categories, activeCategory, setActiveCategor
           let isActive = category.strCategory === activeCategory;
           return (
             <TouchableOpacity
-              onPress={() => setActiveCategory(category.strCategory)}
+              onPress={() => handleChangeCategory(category.strCategory)}
               className="flex items-center space-y-1"
               key={index}
             >

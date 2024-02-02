@@ -18,16 +18,25 @@ import { BellIcon, MagnifyingGlassIcon } from "react-native-heroicons/outline";
 
 import Categories from "../components/Categories";
 import axios from "axios";
+import Recipes from "../components/Recipes";
 
 const HomeScreen = () => {
   const [activeCategory, setActiveCategory] = useState("Beef");
   const [categories, setCategories] = useState([]);
+  const [recipes, setRecipes] = useState([]);
 
   // fetching categories
 
   useEffect(() => {
     getCategories();
+    getRecipes();
   }, []);
+
+  const handleChangeCategory = category =>{
+    getRecipes(category);
+    setActiveCategory(category);
+    setRecipes([]);
+  }
   const getCategories = async () => {
     try {
       const response = await axios.get(
@@ -38,7 +47,21 @@ const HomeScreen = () => {
         setCategories(response.data.categories);
       }
     } catch (error) {
-      console.log(error);
+      console.log(error.message);
+    }
+  };
+  // fetching recipes
+  const getRecipes = async (category = "Beef") => {
+    try {
+      const response = await axios.get(
+        `https://themealdb.com/api/json/v1/1/filter.php?c=${category}`
+      );
+
+      if (response && response.data) {
+        setRecipes(response.data.meals);
+      }
+    } catch (error) {
+      console.log(error.message);
     }
   };
   return (
@@ -47,7 +70,7 @@ const HomeScreen = () => {
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingTop: 50 }}
-        className="space-y-6"
+        className="space-y-6 relative"
       >
         <View className="mx-4 flex-row items-center justify-between mb-3">
           <Image
@@ -97,11 +120,18 @@ const HomeScreen = () => {
 
         {/* categories */}
         <View>
-          {categories.length>0 && <Categories
-          categories={categories}
-            activeCategory={activeCategory}
-            setActiveCategory={(name) => setActiveCategory(name)}
-          />}
+          {categories.length > 0 && (
+            <Categories
+              categories={categories}
+              activeCategory={activeCategory}
+              handleChangeCategory={handleChangeCategory}
+            />
+          )}
+        </View>
+
+        {/* recipes */}
+        <View>
+          <Recipes categories={categories} recipes={recipes} />
         </View>
       </ScrollView>
     </SafeAreaView>
