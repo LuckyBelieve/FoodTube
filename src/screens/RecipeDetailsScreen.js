@@ -26,6 +26,7 @@ import {
 import { useNavigation } from "@react-navigation/native";
 import axios from "axios";
 import YoutubeIframe from "react-native-youtube-iframe";
+import Animated from "react-native-reanimated";
 
 import Loading from "../components/Loading";
 
@@ -70,9 +71,14 @@ export default function RecipeDetailsScreen(props) {
     return indices;
   };
 
-  const getYoutubeVideoId = (youtubeUrl)=>{
-
-  }
+  const getYoutubeVideoId = (url) => {
+    const regex = /[?&]v=([^&]+)/;
+    const match = url.match(regex);
+    if (match && match[1]) {
+      return match[1];
+    }
+    return null;
+  };
   return (
     <ScrollView
       showsVerticalScrollIndicator={false}
@@ -84,7 +90,8 @@ export default function RecipeDetailsScreen(props) {
       {/* recipe image */}
 
       <View className="flex-row justify-center">
-        <Image
+        <Animated.Image
+          sharedTransitionTag={item.strMeal}
           source={{ uri: item.strMealThumb }}
           style={{ width: wp(98), height: hp(50) }}
           className=" rounded-t-[45px] rounded-b-[40px] mt-1"
@@ -224,17 +231,17 @@ export default function RecipeDetailsScreen(props) {
           <View className="space-y-4">
             <Text
               className="font-bold flex-1 text-neutral-700"
-              style={{ fontSize: hp(1.5) }}
+              style={{ fontSize: hp(2.5) }}
             >
               Ingredients
             </Text>
             <View className="space-y-2 ml-3">
               {ingredientsIndexes(meal).map((i) => (
-                <View key={i} className="flex-row items-center space-y-4">
+                <View key={i} className="flex-row items-center gap-1">
                   <View
                     style={{ height: hp(1.5), width: hp(1.5) }}
                     className="bg-amber-300 rounded-full"
-                  />
+                  ></View>
                   <View className="flex-row space-x-2">
                     <Text
                       style={{ fontSize: hp(1.7) }}
@@ -277,7 +284,10 @@ export default function RecipeDetailsScreen(props) {
                 Recipe Video
               </Text>
               <View>
-                <YoutubeIframe videoId={getYoutubeVideoId(meal.strYoutube)} height={hp(30)}/>
+                <YoutubeIframe
+                  videoId={getYoutubeVideoId(meal.strYoutube)}
+                  height={hp(30)}
+                />
               </View>
             </View>
           )}
